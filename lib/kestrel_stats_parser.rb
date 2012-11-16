@@ -1,7 +1,6 @@
 require 'lib/stat_collection'
 require 'lib/stats_payload'
 require 'json'
-require 'pp'
 
 class KestrelStatsParser
   attr_accessor :raw_stats

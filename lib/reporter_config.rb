@@ -1,9 +1,9 @@
 require 'yaml'
 require 'erb'
 
-class StatsReporterConfig
+class ReporterConfig
   @@config = nil
-  DEFAULT_CONFIG = File.join(File.dirname(__FILE__), '..', 'config', 'stats_reporter.yml')
+  DEFAULT_CONFIG = File.join(File.dirname(__FILE__), '..', 'config', 'config.yml')
 
   class << self
     def get_rack_env_or_default
@@ -65,7 +65,7 @@ class StatsReporterConfig
     end
 
     def statsd_log_type
-      log_path = get_config['log_path']
+      log_path = get_statsd_config['log_path']
       return Rails.logger if log_path == 'rails'
       return Logger.new(log_path) unless log_path.nil?
       return nil

@@ -1,9 +1,9 @@
-require 'lib/stats_reporter_config'
+require 'lib/reporter_config'
 require 'vizify-statsd'
 require 'logger'
 
 module Statsd
-  Vizify::Statsd::Proxy.configure(StatsReporterConfig.statsd_host, StatsReporterConfig.statsd_port, StatsReporterConfig.statsd_app_name, StatsReporterConfig.statsd_enabled)
+  Vizify::Statsd::Proxy.configure(ReporterConfig.statsd_host, ReporterConfig.statsd_port, ReporterConfig.statsd_app_name, ReporterConfig.statsd_enabled, ReporterConfig.statsd_log_type)
 
   class Send
     class << self

@@ -1,16 +1,15 @@
-require 'lib/stats_reporter_config'
+require 'lib/reporter_config'
 require 'lib/kestrel_stats_parser'
 require 'lib/statsd_cannon'
 require 'net/http'
 require 'json'
-require 'pp'
 
 class KestrelStatsReporter
   def initialize
-    host = StatsReporterConfig.kestrel_host
-    port = StatsReporterConfig.kestrel_port
-    path = StatsReporterConfig.kestrel_path
-    namespace = StatsReporterConfig.kestrel_namespace
+    host = ReporterConfig.kestrel_host
+    port = ReporterConfig.kestrel_port
+    path = ReporterConfig.kestrel_path
+    namespace = ReporterConfig.kestrel_namespace
 
     @uri_string = "http://#{host}:#{port}/#{path}?namespace=#{namespace}"
   end
@@ -27,7 +26,6 @@ class KestrelStatsReporter
     raw_stats = fetch_stats()
     parser = KestrelStatsParser.new(raw_stats)
     normalized_stats = parser.parse_and_normalize
-    #pp normalized_stats
     StatsdCannon.fire(normalized_stats)
   end
 end

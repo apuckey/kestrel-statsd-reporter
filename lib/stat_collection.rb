@@ -22,6 +22,10 @@ class StatCollection
   end
 
   def average(key)
-    @data[key].inject(0.0) {|sum, item| sum + item } / @data[key].length
+    sum(key) / @data[key].length
+  end
+
+  def sum(key)
+    @data[key].inject(0.0) {|sum, item| sum + item }
   end
 end

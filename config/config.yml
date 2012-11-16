@@ -6,7 +6,7 @@ development:
     enabled: true
     host: localhost
     port: 7000
-    log_path: 'kestrel-health.log'
+    log_path: kestrel-health.log
 
   kestrel:
     host: 127.0.0.1
