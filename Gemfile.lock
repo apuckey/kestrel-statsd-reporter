@@ -1,0 +1,14 @@
+GIT
+  remote: https://github.com/vizify/vizify-statsd.git
+  revision: 38d9608ff9613908d1341497a1a6b9bf43bf9ad2
+  specs:
+    vizify-statsd (0.0.3)
+
+GEM
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  vizify-statsd!

@@ -1,0 +1,30 @@
+
+development:
+
+  statsd:
+    app_name: <%= (ENV['VIZIFY_NAME'] && "#{ENV['VIZIFY_NAME']}.kestrel-health") || 'unnamed.kestrel-health' %>
+    enabled: true
+    host: localhost
+    port: 7000
+    log_path: 'kestrel-health.log'
+
+  kestrel:
+    host: 127.0.0.1
+    port: 2223
+    path: stats.json
+    namespace: statsd
+
+
+production:
+
+  statsd:
+    app_name: <%= (ENV['VIZIFY_NAME'] && "#{ENV['VIZIFY_NAME']}.kestrel-health") || 'unnamed.kestrel-health' %>
+    enabled: true
+    host: localhost
+    port: 7000
+
+  kestrel:
+    host: 127.0.0.1
+    port: 2223
+    path: stats.json
+    namespace: statsd
