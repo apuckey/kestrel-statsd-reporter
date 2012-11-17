@@ -1,3 +1,4 @@
+require 'lib/reporter_config'
 require 'lib/stat_collection'
 require 'lib/stats_payload'
 require 'json'
@@ -9,6 +10,7 @@ class KestrelStatsParser
     @raw_stats = raw_stats
     @payload = StatsPayload.new
     @queue_stats = StatCollection.new
+    @aggregated_metrics = ReporterConfig.kestrel_aggregated_metrics
   end
 
   def parse_and_normalize
@@ -22,13 +24,14 @@ class KestrelStatsParser
     begin
       return JSON.parse(@raw_stats)
     rescue Exception => e
-      puts "Unable to parse stats from Kestrel: #{e.message}\n#{e.backtrace.join("\n")}"
+      abort("Unable to parse stats from Kestrel: #{e.message}\n#{e.backtrace.join("\n")}")
     end
   end
 
   def filter_and_normalize(stats)
-    filter_counters(stats['counters'])
-    filter_gauges(stats['gauges'])
+    fill_queue_stats(stats['counters'])
+    fill_queue_stats(stats['gauges'])
+    # not really sure what 'metrics' mean, so leaving these out
     #filter_metrics(stats['metrics'])
     prepare_payload()
   end
@@ -36,14 +39,6 @@ class KestrelStatsParser
   def prepare_payload()
     @payload.convert_to_counters(@queue_stats)
     @payload
-  end
-
-  def filter_counters(stats)
-    fill_queue_stats(stats)
-  end
-
-  def filter_gauges(stats)
-    fill_queue_stats(stats)
   end
 
   def fill_queue_stats(stats)
@@ -64,16 +59,10 @@ class KestrelStatsParser
     ['queue', sq_name, stat_name].join('.')
   end
 
-  def filter_metrics(stats)
-    # nothing for now, not really even sure what these mean
-  end
-
   def standardize_queue_name(queue_name)
-    # TODO: toss these names in the config?
-    reserved_names = %w(post_nlp personagoid)
-    reserved_names.each do |reserved_name|
-      if queue_name.start_with?("#{reserved_name}-")
-        return reserved_name
+    @aggregated_metrics.each do |metric_name|
+      if queue_name.start_with?("#{metric_name}-")
+        return metric_name
       end
     end
     queue_name

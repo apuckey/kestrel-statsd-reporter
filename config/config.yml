@@ -1,6 +1,4 @@
-
 development:
-
   statsd:
     app_name: <%= (ENV['VIZIFY_NAME'] && "#{ENV['VIZIFY_NAME']}.kestrel-health") || 'unnamed.kestrel-health' %>
     enabled: true
@@ -13,10 +11,12 @@ development:
     port: 2223
     path: stats.json
     namespace: statsd
+    aggregated_metrics:
+      - post_nlp
+      - personagoid
 
 
 production:
-
   statsd:
     app_name: <%= (ENV['VIZIFY_NAME'] && "#{ENV['VIZIFY_NAME']}.kestrel-health") || 'unnamed.kestrel-health' %>
     enabled: true
@@ -28,3 +28,6 @@ production:
     port: 2223
     path: stats.json
     namespace: statsd
+    aggregated_metrics:
+      - post_nlp
+      - personagoid

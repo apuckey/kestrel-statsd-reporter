@@ -21,11 +21,11 @@ class StatCollection
     @data[key]
   end
 
-  def average(key)
-    sum(key) / @data[key].length
+  def average(key, round_digits = 3)
+    (sum(key) / @data[key].length).round(round_digits)
   end
 
-  def sum(key)
-    @data[key].inject(0.0) {|sum, item| sum + item }
+  def sum(key, round_digits = 3)
+    (@data[key].inject(0.0) {|sum, item| sum + item }).round(round_digits)
   end
 end

@@ -44,6 +44,10 @@ class ReporterConfig
       get_kestrel_config['namespace']
     end
 
+    def kestrel_aggregated_metrics
+      get_kestrel_config['aggregated_metrics'] || []
+    end
+
     def get_statsd_config
       get_config['statsd']
     end
