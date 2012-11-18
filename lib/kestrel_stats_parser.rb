@@ -1,4 +1,4 @@
-require 'lib/reporter_config'
+require 'lib/aggregate_queue_name'
 require 'lib/stat_collection'
 require 'lib/stats_payload'
 require 'json'
@@ -10,7 +10,6 @@ class KestrelStatsParser
     @raw_stats = raw_stats
     @payload = StatsPayload.new
     @queue_stats = StatCollection.new
-    @aggregated_metrics = ReporterConfig.kestrel_aggregated_metrics
   end
 
   def parse_and_normalize
@@ -45,26 +44,12 @@ class KestrelStatsParser
     stats.each_pair do |key, value|
       key_parts = key.split('/')
       if key_parts.length > 1 && key_parts[0] == 'q' # it's a queue
-        queue_name = key_parts[1]
-        stat_name = key_parts[2]
-        @queue_stats.append(get_queue_key(queue_name, stat_name), value)
+        aqn = AggregateQueueName.new(key_parts[1], key_parts[2])
+        @queue_stats.append(aqn.name, value, aqn.is_aggregated)
       else # regular stat
         @queue_stats.append(key, value)
       end
     end
   end
 
-  def get_queue_key(queue_name, stat_name)
-    sq_name = standardize_queue_name(queue_name.to_s)
-    ['queue', sq_name, stat_name].join('.')
-  end
-
-  def standardize_queue_name(queue_name)
-    @aggregated_metrics.each do |metric_name|
-      if queue_name.start_with?("#{metric_name}-")
-        return metric_name
-      end
-    end
-    queue_name
-  end
 end

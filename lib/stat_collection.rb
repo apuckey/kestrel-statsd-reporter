@@ -1,31 +1,34 @@
+require 'lib/stat'
+
 class StatCollection
-  attr_accessor :data
+  attr_accessor :stats
 
   def initialize
-    @data = Hash.new()
+    @stats = Hash.new()
   end
 
-  def append(key, value)
-    if @data.has_key?(key)
-      @data[key] << value.to_f
+  def append(key, value, is_aggregate = false)
+    value_populated = @stats.has_key?(key) && !@stats[key].nil?
+    if value_populated
+      @stats[key].append(value.to_f)
     else
-      @data[key] = [value.to_f]
+      @stats[key] = Stat.new(value.to_f, is_aggregate)
     end
   end
 
   def keys
-    @data.keys
+    @stats.keys
   end
 
-  def get(key)
-    @data[key]
+  def is_aggregated?(key)
+    @stats[key].is_aggregated
   end
 
   def average(key, round_digits = 3)
-    (sum(key) / @data[key].length).round(round_digits)
+    @stats[key].average(round_digits)
   end
 
   def sum(key, round_digits = 3)
-    (@data[key].inject(0.0) {|sum, item| sum + item }).round(round_digits)
+    @stats[key].sum(round_digits)
   end
 end

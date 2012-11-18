@@ -11,8 +11,13 @@ class StatsPayload
 
   def convert_to_counters(stat_collection)
     stat_collection.keys.each do |key|
-      @counters["#{key}.mean"] = stat_collection.average(key).to_s + "|c"
-      @counters["#{key}.sum"] = stat_collection.sum(key).to_s + "|c"
+      if stat_collection.is_aggregated?(key)
+        @counters["#{key}.mean"] = stat_collection.average(key).to_s + "|c"
+        @counters["#{key}.sum"] = stat_collection.sum(key).to_s + "|c"
+      else
+        @counters["#{key}.count"] = stat_collection.sum(key).to_s + "|c"
+      end
     end
   end
+
 end
